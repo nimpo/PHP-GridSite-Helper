@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<gacl version="0.0.1">
+<entry>
+<any-user/>
+<allow><read/><exec/><list/></allow>
+</entry>
+</gacl>

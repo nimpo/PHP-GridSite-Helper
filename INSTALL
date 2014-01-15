@@ -1,0 +1,6 @@
+This script---gridsite.inc---is meant to be housed outside normal server 
+Document Roots (e.g. /var/www/etc/gridsite.inc on RedHat clone systems)
+i.e. not within reach of any direct request to the web server and should 
+be referenced by the relevant "auto_prepend_file" directive in php.ini 
+along with setting the corresponding "include_path".
+
