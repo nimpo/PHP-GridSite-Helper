@@ -80,8 +80,8 @@ header("Expires: Sat, 01 Jan 1970 00:00:00 GMT");
 
 //Setup the GridSite stuff
 $PATH=$_SERVER['DOCUMENT_ROOT'].$_SERVER['SCRIPT_NAME'];
-$DIR=dirname($PATH);
-$FILE=basename($PATH);
+if ( is_dir($PATH) ) { $DIR=$PATH; $FILE=""; }
+else { $DIR=dirname($PATH); $FILE=basename($PATH); }
 $SEC=(isset($_SERVER['HTTPS']))?'':'S';
 
 // Find GridSite Header/Footer
@@ -389,13 +389,12 @@ if ( isset($_GET['cmd']) && preg_match('/^list_acl$/',$_GET['cmd'])) {
     header("X-PHP-GridSite-Helper: ACL List Processed");
     $listbuffer="";
     for ($i=0; $i < count($Entries); $i++) { $listbuffer.="Entry ".($i+1)." <br />".$Entries[$i]."<br />\n"; }
-    $GI=str_replace("<br>", "<br><a href=\"$FILE\">Back</a> . ", $GI);
     print filter($listbuffer);
     exit;
   }
 }
 
-if ( isset($_GET['cmd']) && preg_match('/^_debug$/',$_GET['cmd'])) {
+if ( isset($_GET['cmd']) && preg_match('/^GSdebug$/',$_GET['cmd'])) {
   if ( ! in_array("READ",$GACL) )  {
     header("HTTP/1.0 403 Forbidden");
     header("X-PHP-GridSite-Helper: GACL forbids");
@@ -510,7 +509,7 @@ function filter($buffer)
   if ( preg_match("/<head(\s[^>]*|)>(.*)<\/head>/is",$buffer,$head) ) {
     $GH=preg_replace("/<\s*head(\s[^>]*)*>(.*)<\s*\/\s*head\s*>/is","<head".$head[1]."\\1>".$head[2]."\\2</head>",$GH);
   }
-  $buffer=preg_replace("/<\s*head(?:\s[^>]*)*>.*<\s*\/\s*head>|<\/head\s*\/\s*>/", "", $buffer);
+  $buffer=preg_replace("/<\s*head(?:\s[^>]*)*>.*<\s*\/\s*head>|<\/head\s*\/\s*>/is", "", $buffer);
 
 //body
   if ( ! preg_match("/<\s*body(?:\s[^>]*)*>/is",$GH) )       { $GH=preg_replace("/<\s*\/\s*head\s*>/is", "</head><body>", $GH); }
@@ -533,6 +532,7 @@ function shutdown()
   ob_end_flush();
   $contents = ob_get_contents();
   @ob_end_clean();
+
   print "$contents";
 }
 
