@@ -504,6 +504,13 @@ function filter($buffer)
   $buffer=preg_replace("/<\s*html(?:\s[^>]*)*>/is", "", $buffer); // html element now completely in GH
   $buffer=preg_replace("/<\s*\/\s*html\s*>/is", "", $buffer);
 
+//title
+  if ( ! preg_match("/<\s*title(?:\s[^>]*)*>/is",$GH) ) { $GH=preg_replace("/(<\s*head(?:\s[^>]*)*>)/is", "\\1\n<title></title>", $GH); }
+  if ( preg_match("/<title(\s[^>]*|)>(.*)<\/title>/is",$buffer,$title) ) {
+    $GH=preg_replace("/<\s*title(\s[^>]*)*>.*<\s*\/\s*title\s*>/is","<title".$title[1]."\\1>".$title[2]."</title>",$GH);
+  }
+  $buffer=preg_replace("/<\s*title(?:\s[^>]*)*>.*<\s*\/\s*title>|<\/title\s*\/\s*>/is", "", $buffer);
+
 //head
   if ( ! preg_match("/<\s*head(?:\s[^>]*)*>/is",$GH) ) { $GH=preg_replace("/(<\s*html(?:\s[^>]*)*>)/is", "\\1\n<head></head>", $GH); }
   if ( preg_match("/<head(\s[^>]*|)>(.*)<\/head>/is",$buffer,$head) ) {
